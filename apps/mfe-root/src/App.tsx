@@ -30,7 +30,7 @@ export const App: React.FC = () => {
         }}
       >
         <a
-          href="/"
+          href="/call-center"
           style={{
             color: 'white',
             textDecoration: 'none',
