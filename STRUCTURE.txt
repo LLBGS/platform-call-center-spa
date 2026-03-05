@@ -1,0 +1,115 @@
+📦 CALL CENTER PLATFORM - MFE MONOREPO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📁 frontend/
+│
+├── 📄 README.md                  Quick start & overview
+├── 📄 ARCHITECTURE.md            Architectural design & patterns
+├── 📄 DEVELOPMENT.md             Developer guide & conventions
+├── 📄 STRUCTURE.txt              This file
+│
+├── 📦 package.json              Yarn workspace config
+├── 🔧 tsconfig.json             Shared TypeScript config
+├── 🔧 tsconfig.node.json        Build tools config
+├── 🔧 vitest.config.ts          Shared Vitest config
+├── 🔧 .eslintrc.json            ESLint rules
+├── 🔧 .prettierrc                Prettier formatting
+├── 🔧 .npmrc                     NPM config
+├── 🔧 .gitignore                 Git ignore patterns
+│
+│
+├── 📂 apps/                     Microfrontend Applications
+│   │
+│   ├── 📂 mfe-root/             🎯 ROOT ORCHESTRATOR
+│   │   ├── 📦 package.json      @call-center-platform/mfe-root
+│   │   ├── 🔧 tsconfig.json
+│   │   ├── 🔧 vite.config.ts
+│   │   └── 📂 src/
+│   │       ├── index.ts         Single SPA bootstrap
+│   │       └── App.tsx          Root component
+│   │
+│   ├── 📂 mfe-shell/            🎯 GLOBAL STATE & FIREBASE
+│   │   ├── 📦 package.json      @call-center-platform/mfe-shell
+│   │   ├── 🔧 tsconfig.json
+│   │   ├── 🔧 vite.config.ts
+│   │   └── 📂 src/
+│   │       ├── index.ts         Single SPA bootstrap
+│   │       ├── App.tsx          Shell component
+│   │       └── 📂 store/
+│   │           └── globalStore.ts  Zustand state management
+│   │
+│   ├── 📂 mfe-call-center/      🎯 NEW CALL CENTER VIEW
+│   │   ├── 📦 package.json      @call-center-platform/mfe-call-center
+│   │   ├── 🔧 tsconfig.json
+│   │   ├── 🔧 vite.config.ts
+│   │   └── 📂 src/
+│   │       ├── index.ts         Single SPA bootstrap
+│   │       └── App.tsx          Call center component
+│   │
+│   └── 📂 mfe-call-center-legacy/ 🎯 OLD CALL CENTER (DEPRECATED)
+│       ├── 📦 package.json      @call-center-platform/mfe-call-center-legacy
+│       ├── 🔧 tsconfig.json
+│       ├── 🔧 vite.config.ts
+│       └── 📂 src/
+│           ├── index.ts         Single SPA bootstrap
+│           └── App.tsx          Legacy component
+│
+│
+├── 📂 packages/                 Shared Code & Components
+│   │
+│   ├── 📂 shared-ui/            🧩 UI COMPONENTS
+│   │   ├── 📦 package.json      @call-center-platform/shared-ui
+│   │   ├── 🔧 tsconfig.json
+│   │   └── 📂 src/
+│   │       ├── index.ts         Exports
+│   │       └── Button.tsx       Example component
+│   │
+│   ├── 📂 shared-utils/         🛠️  UTILITIES & HELPERS
+│   │   ├── 📦 package.json      @call-center-platform/shared-utils
+│   │   ├── 🔧 tsconfig.json
+│   │   └── 📂 src/
+│   │       └── index.ts         formatDate, formatTime, delay...
+│   │
+│   └── 📂 shared-types/         📋 TYPES & INTERFACES
+│       ├── 📦 package.json      @call-center-platform/shared-types
+│       ├── 🔧 tsconfig.json
+│       └── 📂 src/
+│           └── index.ts         User, Call, FeatureToggle...
+│
+└── 📂 shared/                   (legacy - será consolidado)
+    └── 📂 src/
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🚀 QUICK START
+
+  yarn install                    # Install dependencies
+  yarn dev                        # Start MFE Root dev server
+  yarn build                      # Build all apps
+  yarn test                       # Run all tests
+  yarn lint                       # Lint all apps
+  yarn type-check                 # TypeScript check
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📚 STACK
+
+  Monorepo:        Yarn Workspaces
+  Microfrontends:  Single SPA
+  Framework:       React 18+
+  Language:        TypeScript 5+
+  Build Tool:      Vite
+  Testing:         Vitest
+  State:           Zustand
+  Linting:         ESLint
+  Formatting:      Prettier
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📖 DOCUMENTATION
+
+  README.md         - Project overview and quick start
+  ARCHITECTURE.md   - System design and patterns
+  DEVELOPMENT.md    - Developer guide and workflows
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

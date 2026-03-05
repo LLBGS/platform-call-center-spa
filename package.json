@@ -1,0 +1,31 @@
+{
+  "name": "call-center-platform",
+  "version": "1.0.0",
+  "description": "Microfrontend monorepo for call center platform",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "yarn workspace @call-center-platform/mfe-root dev",
+    "dev:all": "concurrently \"yarn workspace @call-center-platform/mfe-root dev\" \"yarn workspace @call-center-platform/mfe-shell dev\" \"yarn workspace @call-center-platform/mfe-call-center dev\" \"yarn workspace @call-center-platform/mfe-call-center-legacy dev\"",
+    "build": "yarn workspaces run build",
+    "build:root": "yarn workspace @call-center-platform/mfe-root build",
+    "build:shell": "yarn workspace @call-center-platform/mfe-shell build",
+    "build:cc": "yarn workspace @call-center-platform/mfe-call-center build",
+    "build:cc-legacy": "yarn workspace @call-center-platform/mfe-call-center-legacy build",
+    "test": "yarn workspaces run test",
+    "test:watch": "yarn workspaces run test:watch",
+    "lint": "yarn workspaces run lint",
+    "type-check": "yarn workspaces run type-check",
+    "clean": "yarn workspaces run clean && rm -rf node_modules"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "eslint": "^8.55.0",
+    "prettier": "^3.1.1",
+    "typescript": "^5.3.3"
+  },
+  "packageManager": "yarn@4.0.0"
+}
