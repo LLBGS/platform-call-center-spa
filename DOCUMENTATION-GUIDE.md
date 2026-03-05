@@ -66,6 +66,9 @@
 
 **Arquivo a ler:**
 
+- **[docs/CONFIGURACAO-ESSENCIAL.md](docs/CONFIGURACAO-ESSENCIAL.md)** ⭐ COMECE POR AQUI
+   - Configurações obrigatórias e validação rápida
+
 - **[docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)** (Já existente)
 
 **Script a usar:**
@@ -93,7 +96,11 @@
    - Como funciona
    - Vantagens sobre código hardcoded
 
-3. **Código fonte:**
+3. **[docs/CONFIGURACAO-ESSENCIAL.md](docs/CONFIGURACAO-ESSENCIAL.md)**
+   - Variáveis obrigatórias para rodar em dev
+   - Checklist de validação do setup
+
+4. **Código fonte:**
    - `apps/mfe-root/src/mfe-registry.config.ts` — Leitor
    - `apps/mfe-root/src/root-config.ts` — Registrador
    - `apps/mfe-root/.env.template` — Configuração

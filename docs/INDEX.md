@@ -6,8 +6,9 @@ Bem-vindo ao repositório **Call Center Platform**! Este é um monorepo com arqu
 
 ### 🚀 **Para Começar**
 1. **[README.md](../README.md)** - Overview rápido e quick start
-2. **[SETUP.md](SETUP.md)** - Instalação e configuração detalhada do ambiente
-3. **[DEVELOPMENT.md](DEVELOPMENT.md)** - Guia prático de desenvolvimento diário
+2. **[CONFIGURACAO-ESSENCIAL.md](CONFIGURACAO-ESSENCIAL.md)** - Configuração mínima obrigatória
+3. **[SETUP.md](SETUP.md)** - Instalação e configuração detalhada do ambiente
+4. **[DEVELOPMENT.md](DEVELOPMENT.md)** - Guia prático de desenvolvimento diário
 
 ### 🏗️ **Arquitetura & Design**
 4. **[ARCHITECTURE.md](ARCHITECTURE.md)** - Arquitetura de microfrontends
@@ -29,8 +30,9 @@ Bem-vindo ao repositório **Call Center Platform**! Este é um monorepo com arqu
 
 ### ✅ Quero começar a desenvolver
 1. Leia [SETUP.md](SETUP.md) - instale as dependências
-2. Leia [DEVELOPMENT.md](DEVELOPMENT.md) - aprenda os comandos básicos
-3. Consulte [EXAMPLES.md](EXAMPLES.md) - veja exemplos de código
+2. Leia [CONFIGURACAO-ESSENCIAL.md](CONFIGURACAO-ESSENCIAL.md) - aplique as configurações obrigatórias
+3. Leia [DEVELOPMENT.md](DEVELOPMENT.md) - aprenda os comandos básicos
+4. Consulte [EXAMPLES.md](EXAMPLES.md) - veja exemplos de código
 
 ### 🏗️ Quero entender a arquitetura
 1. Leia [ARCHITECTURE.md](ARCHITECTURE.md) - visão geral
@@ -56,6 +58,7 @@ frontend/
 ├── docs/                          # 📚 Este diretório com toda a documentação
 │   ├── INDEX.md                   # Este arquivo - guia de documentação
 │   ├── README.md → ../README.md   # Overview geral
+│   ├── CONFIGURACAO-ESSENCIAL.md  # Setup mínimo obrigatório
 │   ├── ARCHITECTURE.md            # Padrão arquitetural
 │   ├── DEVELOPMENT.md             # Desenvolvimento diário
 │   ├── SETUP.md                   # Setup e instalação

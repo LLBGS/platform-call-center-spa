@@ -13,6 +13,7 @@ Monorepo usando **Yarn Workspaces** para gerenciar **microfrontends** com **Sing
 Para informações detalhadas, consulte nosso **[Índice de Documentação](docs/INDEX.md)**.
 
 ### 🚀 Começando
+- **[CONFIGURACAO-ESSENCIAL.md](docs/CONFIGURACAO-ESSENCIAL.md)** - Setup minimo obrigatorio (recomendado)
 - **[SETUP.md](docs/SETUP.md)** - Instalação e configuração do ambiente
 - **[DEVELOPMENT.md](docs/DEVELOPMENT.md)** - Guia de desenvolvimento diário
 
@@ -73,7 +74,15 @@ frontend/
 yarn install
 ```
 
-### 2️⃣ Rodar em Desenvolvimento
+### 2️⃣ Configurar Ambiente do Root
+
+```bash
+cp apps/mfe-root/.env.template apps/mfe-root/.env.local
+```
+
+Veja detalhes em [docs/CONFIGURACAO-ESSENCIAL.md](docs/CONFIGURACAO-ESSENCIAL.md).
+
+### 3️⃣ Rodar em Desenvolvimento
 
 ```bash
 # Opção A: Apenas MFE Root
@@ -85,7 +94,7 @@ yarn dev:all
 
 Abre em `http://localhost:5173`
 
-### 3️⃣ Build
+### 4️⃣ Build
 
 ```bash
 # Build de todos os packages
@@ -97,7 +106,7 @@ yarn build:shell
 yarn build:cc
 ```
 
-### 4️⃣ Outros Comandos
+### 5️⃣ Outros Comandos
 
 ```bash
 # Testes
@@ -236,6 +245,7 @@ Veja mais em [EXAMPLES.md](docs/EXAMPLES.md).
 ## 🔗 Recursos Úteis
 
 - **[Documentação Completa](docs/INDEX.md)** - Índice de todos os documentos
+- **[Configuração Essencial](docs/CONFIGURACAO-ESSENCIAL.md)** - Passo a passo objetivo
 - **[Setup Detalhado](docs/SETUP.md)** - Instruções passo a passo
 - **[FAQ & Troubleshooting](docs/TROUBLESHOOTING.md)** - Problemas comuns
 - **[Guia de Contribuição](docs/CONTRIBUTING.md)** - Como contribuir

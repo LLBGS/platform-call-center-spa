@@ -2,6 +2,8 @@
 
 Instruções completas para configurar o ambiente de desenvolvimento para o **Call Center Platform**.
 
+> Se você quer apenas subir o projeto rapidamente com o minimo obrigatório, use primeiro: `docs/CONFIGURACAO-ESSENCIAL.md`.
+
 ## 📋 Pré-requisitos
 
 Antes de começar, certifique-se de ter instalado:
@@ -50,7 +52,15 @@ Isso irá:
 - ✅ Instalar dependências de todos os workspaces (apps/ e packages/)
 - ✅ Criar symlinks entre packages locais
 
-### 3️⃣ Verificar Setup
+### 3️⃣ Configurar Ambiente do `mfe-root` (Obrigatório)
+
+```bash
+cp apps/mfe-root/.env.template apps/mfe-root/.env.local
+```
+
+Sem esse arquivo, o root não consegue registrar corretamente os MFEs dinâmicos via variáveis `VITE_MFE_*`.
+
+### 4️⃣ Verificar Setup
 
 ```bash
 # Listar todos os workspaces
@@ -63,7 +73,7 @@ yarn type-check
 yarn lint
 ```
 
-### 4️⃣ Executar Primeira Vez (Opcional)
+### 5️⃣ Executar Primeira Vez (Opcional)
 
 ```bash
 # Rodar todos os testes para validar setup
