@@ -1,0 +1,69 @@
+# ============================================================================
+# .npmrc Template - Configuração npm para GitHub Packages
+# ============================================================================
+#
+# INSTRUÇÕES:
+# 1. Copie este arquivo para .npmrc (não commitar!)
+# 2. Substitua {GITHUB_TOKEN} por seu Personal Access Token (PAT)
+# 3. Substitua {GITHUB_USERNAME} por seu usuário GitHub
+# 4. Substitua {GITHUB_ORG} pela organização no GitHub
+#
+# CRIAR UM PERSONAL ACCESS TOKEN:
+# 1. GitHub Settings → Developer settings → Personal access tokens
+# 2. Generate new token (classic)
+# 3. Escopo necessário: write:packages (inclui read:packages)
+# 4. Copie o token e guarde com segurança
+#
+# ============================================================================
+
+# Registry padrão do npm (para pacotes públicos)
+registry=https://registry.npmjs.org
+
+# Registry específico para pacotes da organização (usa GitHub Packages)
+@call-center-platform:registry=https://npm.pkg.github.com
+
+# Autenticação para GitHub Packages
+# Formato: //<registry>/:_authToken=<token>
+#
+# Opção 1: Token direto (só para desenvolvimento local)
+# npm.pkg.github.com/:_authToken={GITHUB_TOKEN}
+#
+# Opção 2: Usando variável de ambiente (RECOMENDADO para CI/CD)
+# npm.pkg.github.com/:_authToken=${NPM_TOKEN}
+#
+# Opção 3: Usando credenciais do git (se estiver configurado ssh)
+# npm.pkg.github.com/:_authToken=$(git credential-osxkeychain get)
+
+# ============================================================================
+# DESENVOLVIMENTO LOCAL - Preencha o token ou use variável de ambiente
+# ============================================================================
+
+npm.pkg.github.com/:_authToken=${NPM_TOKEN}
+
+# Se não tiver a variável NPM_TOKEN definida, use:
+# npm.pkg.github.com/:_authToken=ghp_SeuTokenAqui
+
+
+# ============================================================================
+# OPÇÕES ADICIONAIS (ajustar conforme necessário)
+# ============================================================================
+
+# Sempre usar https para maior segurança
+strict-ssl=true
+
+# Timeout para downloads
+fetch-timeout=60000
+
+# Logging - descomente para debug
+# loglevel=silly
+
+# ============================================================================
+# CONFIGURAÇÃO ALTERNATIVA COM MÚLTIPLAS SCOPES
+# ============================================================================
+# Se tiver múltiplas organizações, pode configurar assim:
+#
+# @org1:registry=https://npm.pkg.github.com
+# @org1:_authToken=${NPM_TOKEN_ORG1}
+#
+# @org2:registry=https://npm.pkg.github.com
+# @org2:_authToken=${NPM_TOKEN_ORG2}
