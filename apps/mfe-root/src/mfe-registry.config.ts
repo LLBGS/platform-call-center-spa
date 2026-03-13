@@ -18,18 +18,6 @@ export interface MFEConfig {
 }
 
 /**
- * Converte nome da variável de ambiente para formato legível
- * Exemplo: 'CALL_CENTER_LEGACY' → 'Call Center Legacy'
- */
-function formatMFEName(envName: string): string {
-  return envName
-    .toLowerCase()
-    .split('_')
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
-}
-
-/**
  * Lê configurações de MFEs das variáveis de ambiente
  *
  * Procura por padrões como:

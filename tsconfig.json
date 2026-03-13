@@ -24,7 +24,15 @@
     "noEmit": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@call-center-platform/mfe-shell": ["./apps/mfe-shell/src/index.ts"],
+      "@call-center-platform/shared-types": [
+        "./packages/shared-types/src/index.ts"
+      ],
+      "@call-center-platform/shared-ui": ["./packages/shared-ui/src/index.ts"],
+      "@call-center-platform/shared-utils": [
+        "./packages/shared-utils/src/index.ts"
+      ]
     }
   },
   "include": ["src"],

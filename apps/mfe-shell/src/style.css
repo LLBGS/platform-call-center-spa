@@ -1,0 +1,26 @@
+.shell-app {
+  display: grid;
+  gap: 20px;
+  padding: 24px;
+  color: #1f2937;
+  background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+}
+
+.shell-panel {
+  padding: 16px;
+  border: 1px solid #dbe4f0;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+.shell-panel--highlight {
+  border-color: #93c5fd;
+  background: #eff6ff;
+}
+
+.shell-panel pre {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}

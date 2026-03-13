@@ -4,26 +4,32 @@
 
 Arquitetura de microfrontends descentralizados com orquestração centralizada via Single SPA.
 
-```
-┌─────────────────────────────────────────────────────────┐
-│                    MFE Root (Entry Point)                │
-│              Single SPA Orchestrator & Router             │
-└──────────────┬──────────────┬──────────────┬─────────────┘
-               │              │              │
-       ┌───────▼──┐    ┌───────▼──┐   ┌─────▼──────┐
-       │MFE Shell │    │Call      │   │Call Center │
-       │(Global)  │    │Center    │   │Legacy      │
-       │          │    │          │   │            │
-       │- State   │    │- UI      │   │- UI        │
-       │- Firebase│    │- Logic   │   │- Compat    │
-       └─────┬────┘    └────┬─────┘   └─────┬──────┘
-             │              │              │
-       ┌─────▼──────────────▼──────────────▼────┐
-       │         Shared Packages                 │
-       ├─────────────────────────────────────────┤
-       │ shared-ui          | shared-utils       │
-       │ shared-types       | (Firebase, Utils)  │
-       └─────────────────────────────────────────┘
+```mermaid
+%%{init: {'flowchart': {'defaultRenderer': 'elk'}} }%%
+flowchart TB
+  Root[MFE Root<br/>Single SPA Orchestrator and Router]
+  Shell[MFE Shell<br/>Global State and Firebase]
+  CC[MFE Call Center<br/>UI and Business Logic]
+  Legacy[MFE Call Center Legacy<br/>UI and Compatibility]
+
+  subgraph Shared[Shared Packages]
+    UI[shared-ui]
+    Utils[shared-utils]
+    Types[shared-types]
+  end
+
+  Root --> Shell
+  Root --> CC
+  Root --> Legacy
+  Shell --> UI
+  Shell --> Utils
+  Shell --> Types
+  CC --> UI
+  CC --> Utils
+  CC --> Types
+  Legacy --> UI
+  Legacy --> Utils
+  Legacy --> Types
 ```
 
 ## 🏗️ Camadas
@@ -39,15 +45,19 @@ Arquitetura de microfrontends descentralizados com orquestração centralizada v
 #### MFE Shell (Crítico)
 - **Responsabilidades:**
   - Gerenciar estado global (Zustand store)
-  - Integração com Firebase (feature toggles)
+  - Encapsular adapters de feature toggle e allow list
+  - Integrar providers locais hoje e Firebase/API no futuro
   - Context providers para toda a aplicação
+  - Avaliar acesso por feature e bloquear rotas canary em runtime
   - Theme & internacionalização (futura)
 
 - **Exposições Públicas:**
   ```typescript
   export { useGlobalStore } from './store/globalStore'
-  export { useFeatureToggle } from './hooks/useFeatureToggle'
-  export { useAuth } from './hooks/useAuth'
+  export { AppStateProvider } from './app-state/providers/AppStateProvider'
+  export { useFeatureToggle } from './feature-flags/hooks/useFeatureToggle'
+  export { useFeatureAccess } from './feature-flags/hooks/useFeatureAccess'
+  export { useRouteAccess } from './feature-flags/hooks/useRouteAccess'
   ```
 
 #### MFE Call Center
@@ -83,72 +93,68 @@ Arquitetura de microfrontends descentralizados com orquestração centralizada v
 
 ## 🔄 Fluxo de Comunicação
 
-```
-┌──────────────────────────────────────────────────────┐
-│ MFE Call Center                                      │
-├──────────────────────────────────────────────────────┤
-│ 1. Precisa de global state                           │
-│    → Importa useGlobalStore from mfe-shell           │
-│ 2. Precisa de tipo User                              │
-│    → Importa User from shared-types                  │
-│ 3. Precisa de Button                                 │
-│    → Importa Button from shared-ui                   │
-│ 4. Precisa formatDate                                │
-│    → Importa formatDate from shared-utils            │
-└──────────────────────────────────────────────────────┘
-         ↓ Todos comunicam através de exports
-┌──────────────────────────────────────────────────────┐
-│ Shared Packages (DRY - Do not Repeat Yourself)       │
-└──────────────────────────────────────────────────────┘
+```mermaid
+%%{init: {'flowchart': {'defaultRenderer': 'elk'}} }%%
+flowchart LR
+  CC[MFE Call Center]
+  Shell[mfe-shell<br/>useGlobalStore]
+  T[shared-types<br/>User]
+  UI[shared-ui<br/>Button]
+  U[shared-utils<br/>formatDate]
+
+  CC -->|1. estado global| Shell
+  CC -->|2. tipos| T
+  CC -->|3. componentes| UI
+  CC -->|4. utilitarios| U
 ```
 
 ## 📦 Dependências Entre Packages
 
-```
-mfe-root
-├── shared-utils
-└── shared-types
+```mermaid
+%%{init: {'flowchart': {'defaultRenderer': 'elk'}} }%%
+flowchart TB
+  Root[mfe-root]
+  Shell[mfe-shell]
+  CC[mfe-call-center]
+  Legacy[mfe-call-center-legacy]
+  SUI[shared-ui]
+  SUtils[shared-utils]
+  STypes[shared-types]
+  Firebase[firebase externo]
+  React[react peer dependency]
 
-mfe-shell
-├── shared-utils
-├── shared-types
-└── firebase (externo)
+  Root --> SUtils
+  Root --> STypes
 
-mfe-call-center
-├── shared-ui
-├── shared-utils
-├── shared-types
-└── (acesso a mfe-shell via Single SPA props)
+  Shell --> SUtils
+  Shell --> STypes
+  Shell --> Firebase
 
-mfe-call-center-legacy
-├── shared-ui
-├── shared-utils
-├── shared-types
-└── (acesso a mfe-shell via Single SPA props)
+  CC --> SUI
+  CC --> SUtils
+  CC --> STypes
+  CC -. acesso via exports .-> Shell
 
-shared-ui
-└── react (peer dependency)
+  Legacy --> SUI
+  Legacy --> SUtils
+  Legacy --> STypes
+  Legacy -. acesso via exports .-> Shell
 
-shared-utils
-└── (sem dependências locais)
-
-shared-types
-└── (sem dependências)
+  SUI --> React
 ```
 
 ## 🎯 Padrões de Integração
 
 ### 1. **Entre MFEs via Single SPA Props**
 ```typescript
-// mfe-root registra contexto
-singleSpa.registerApplication({
-  name: '@call-center-platform/mfe-shell',
-  app: () => System.import('@call-center-platform/mfe-shell'),
-  activeWhen: '/',
-  customProps: {
-    globalStore: useGlobalStore,
-  }
-})
+import { registerApplication } from 'single-spa'
+
+// single-spa v4: assinatura (name, app, activeWhen)
+registerApplication(
+  '@call-center-platform/mfe-shell',
+  () => System.import('@call-center-platform/mfe-shell'),
+  () => true
+)
 ```
 
 ### 2. **Via Shared Packages (Recomendado)**
@@ -161,13 +167,24 @@ import type { User } from '@call-center-platform/shared-types'
 
 ### 3. **Via Context & Providers**
 ```typescript
-// mfe-shell fornece providers
-<GlobalStateProvider>
-  <FirebaseProvider>
-    <App />
-  </FirebaseProvider>
-</GlobalStateProvider>
+// mfe-shell fornece providers e guarda a troca de implementação
+<AppStateProvider>
+  <App />
+</AppStateProvider>
 ```
+
+### 4. **Via Adapters de Access Control**
+```typescript
+// Implementação atual: mock/local
+new LocalFeatureToggleAdapter()
+new LocalAllowListAdapter()
+
+// Evolução futura sem mudar consumidores
+new FirebaseFeatureToggleAdapter()
+new ApiAllowListAdapter()
+```
+
+O shell mantém a decisão visual e o bloqueio de canary por rota. O mfe-root continua responsável apenas pelo bootstrap estático via env e não deve depender de contexto de usuário ou fonte assíncrona de acesso.
 
 ## 🔐 Limites de Responsabilidade
 
