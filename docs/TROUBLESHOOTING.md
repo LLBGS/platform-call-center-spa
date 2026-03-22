@@ -6,6 +6,32 @@ Problemas comuns e soluções para o **Call Center Platform**.
 
 ## 🔥 Problemas Comuns
 
+### 0. Unleash nao aplica flags no Shell
+
+**Sintomas:**
+- Flags continuam com valores locais
+- Rota protegida nao muda mesmo alterando flag no Unleash
+
+**Checklist rapido:**
+
+```bash
+# 1) Confirme variaveis do shell
+cat apps/mfe-shell/.env.local | grep VITE_UNLEASH
+
+# 2) Reinicie apenas o shell
+yarn workspace @call-center-platform/mfe-shell dev
+```
+
+**Causas comuns e acao:**
+- URL incorreta: use `.../api/frontend/` (Frontend API URL).
+- Token incorreto: use key `FRONTEND` (nao use SERVER/CLIENT no browser).
+- Chave recem criada: aguarde ate 1 minuto para ativacao.
+- Unleash indisponivel: shell entra em fallback local de forma automatica.
+
+**Diagnostico em DEV:**
+- Abra o console do navegador e procure pelo aviso:
+  `Unleash indisponivel. Aplicando fallback local de feature toggles.`
+
 ### 1. Porta Já em Uso
 
 **Problema:** `Error: EADDRINUSE: address already in use :::5173`

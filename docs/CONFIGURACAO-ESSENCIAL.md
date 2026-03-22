@@ -54,6 +54,30 @@ Configuracao padrao esperada no `.env.local`:
 - `VITE_MFE_CALL_CENTER_LEGACY_DOM_ELEMENT=mfe-call-center-legacy`
 - `VITE_MFE_CALL_CENTER_LEGACY_ENABLED=true`
 
+## 3.1 Configurar Unleash no MFE Shell
+
+O `mfe-shell` suporta consumo remoto de feature flags via Unleash Frontend API.
+
+Crie o arquivo local:
+
+```bash
+cp apps/mfe-shell/.env.template apps/mfe-shell/.env.local
+```
+
+Variaveis esperadas no `.env.local` do shell:
+
+- `VITE_UNLEASH_FRONTEND_API_URL=<URL_FRONTEND_API_UNLEASH>`
+- `VITE_UNLEASH_FRONTEND_TOKEN=<TOKEN_FRONTEND_UNLEASH>`
+- `VITE_UNLEASH_APP_NAME=mfe-shell`
+- `VITE_UNLEASH_TIMEOUT_MS=1000`
+- `VITE_UNLEASH_REFRESH_INTERVAL=15`
+
+Notas importantes:
+
+- Use sempre a key do tipo `FRONTEND` no browser.
+- Uma key nova pode levar ate 1 minuto para ativar no Unleash.
+- Se URL/token nao forem informados, o shell aplica fallback local automatico.
+
 ## 4. Subir Aplicacoes em Desenvolvimento
 
 Opcao recomendada (tudo junto):
