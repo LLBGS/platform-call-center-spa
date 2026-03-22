@@ -24,3 +24,19 @@
   white-space: pre-wrap;
   word-break: break-word;
 }
+
+.shell-targeted-widget {
+  padding: 18px;
+  border: 1px solid #99f6e4;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #ecfeff 0%, #f0fdfa 100%);
+  box-shadow: 0 10px 24px rgba(20, 184, 166, 0.15);
+}
+
+.shell-targeted-widget h3 {
+  margin: 0 0 8px 0;
+}
+
+.shell-targeted-widget p {
+  margin: 0;
+}
