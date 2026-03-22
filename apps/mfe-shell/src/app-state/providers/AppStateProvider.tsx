@@ -7,12 +7,11 @@ import type {
 } from '@call-center-platform/shared-types';
 
 import { useGlobalStore } from '../../store/globalStore';
+import { createFeatureToggleAdapter } from '../adapters/featureToggleAdapterFactory';
 import { LocalAllowListAdapter } from '../adapters/localAllowListAdapter';
-import { LocalFeatureToggleAdapter } from '../adapters/localFeatureToggleAdapter';
 import {
   DEFAULT_LOCAL_USER,
-  LOCAL_ALLOW_LISTS,
-  LOCAL_FEATURE_TOGGLES,
+  LOCAL_ALLOWED_USER_IDS_BY_FEATURE,
   LOCAL_ROUTE_RULES,
 } from '../config/localAccessConfig';
 import {
@@ -33,6 +32,7 @@ export interface AppStateProviderProps {
 }
 
 const AppStateContext = React.createContext<AppStateContextValue | null>(null);
+const USER_ID_STORAGE_KEY = 'userId';
 
 const createEmptySnapshot = (): AccessControlSnapshot => ({
   featureToggles: {},
@@ -47,22 +47,64 @@ export const AppStateProvider: React.FC<AppStateProviderProps> = ({
   const currentUser = useGlobalStore((state) => state.currentUser);
   const allowList = useGlobalStore((state) => state.allowList);
   const actions = useGlobalStore((state) => state.actions);
+  const [featureToggleAdapter] = React.useState(() =>
+    createFeatureToggleAdapter()
+  );
   const [service] = React.useState(
     () =>
       new AccessControlService({
-        featureToggleAdapter: new LocalFeatureToggleAdapter(
-          LOCAL_FEATURE_TOGGLES
+        featureToggleAdapter,
+        allowListAdapter: new LocalAllowListAdapter(
+          LOCAL_ALLOWED_USER_IDS_BY_FEATURE
         ),
-        allowListAdapter: new LocalAllowListAdapter(LOCAL_ALLOW_LISTS),
         routeRules: LOCAL_ROUTE_RULES,
+        remoteUserTargetedFeatures: ['componente-allow-list'],
       })
   );
 
+  const getUserFromLocalStorage = React.useCallback((): User | null => {
+    const storedUserId = window.localStorage
+      .getItem(USER_ID_STORAGE_KEY)
+      ?.trim();
+
+    if (!storedUserId) {
+      return null;
+    }
+
+    return {
+      id: storedUserId,
+      name: `Usuario ${storedUserId}`,
+      email: `${storedUserId}@call-center.local`,
+    };
+  }, []);
+
+  React.useEffect(
+    () => () => {
+      const adapterWithStop = featureToggleAdapter as {
+        stop?: () => void;
+      };
+
+      adapterWithStop.stop?.();
+    },
+    [featureToggleAdapter]
+  );
+
   React.useEffect(() => {
-    if (!currentUser && initialUser) {
+    if (currentUser) {
+      return;
+    }
+
+    const storedUser = getUserFromLocalStorage();
+
+    if (storedUser) {
+      actions.setCurrentUser(storedUser);
+      return;
+    }
+
+    if (initialUser) {
       actions.setCurrentUser(initialUser);
     }
-  }, [actions, currentUser, initialUser]);
+  }, [actions, currentUser, getUserFromLocalStorage, initialUser]);
 
   React.useEffect(() => {
     let isActive = true;

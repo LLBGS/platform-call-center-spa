@@ -18,12 +18,13 @@ export interface AccessControlServiceOptions {
   featureToggleAdapter: FeatureToggleAdapter;
   allowListAdapter: AllowListAdapter;
   routeRules: RouteAccessRule[];
+  remoteUserTargetedFeatures?: string[];
 }
 
 export class AccessControlService {
   private featureToggles: FeatureToggleSnapshot = {};
 
-  private readonly allowLists = new Map<string, UserAllowList | null>();
+  private readonly allowedUserIdsByFeature = new Map<string, Set<string>>();
 
   constructor(private readonly options: AccessControlServiceOptions) {}
 
@@ -32,18 +33,33 @@ export class AccessControlService {
   }
 
   async hydrate(userId: string | null): Promise<AccessControlSnapshot> {
-    const [featureToggles, allowList] = await Promise.all([
-      this.options.featureToggleAdapter.getAll(),
-      userId
-        ? this.options.allowListAdapter.getByUserId(userId)
-        : Promise.resolve(null),
-    ]);
+    if (this.options.featureToggleAdapter.setUserIdContext) {
+      await this.options.featureToggleAdapter.setUserIdContext(userId);
+    }
+
+    const featureToggles = await this.options.featureToggleAdapter.getAll();
+    const featureKeys = Object.keys(featureToggles);
+
+    const allowedUserIdsEntries = await Promise.all(
+      featureKeys.map(async (featureKey) => {
+        const allowedUserIds =
+          await this.options.allowListAdapter.getAllowedUserIdsByFeature(
+            featureKey
+          );
+
+        return [featureKey, new Set(allowedUserIds)] as const;
+      })
+    );
+
+    this.allowedUserIdsByFeature.clear();
+
+    allowedUserIdsEntries.forEach(([featureKey, allowedUserIds]) => {
+      this.allowedUserIdsByFeature.set(featureKey, allowedUserIds);
+    });
+
+    const allowList = this.createAllowList(userId, featureKeys);
 
     this.featureToggles = featureToggles;
-
-    if (userId) {
-      this.allowLists.set(userId, allowList);
-    }
 
     return {
       featureToggles,
@@ -75,7 +91,15 @@ export class AccessControlService {
       };
     }
 
-    const allowList = allowListOverride ?? this.allowLists.get(userId) ?? null;
+    if (this.isRemoteUserTargetedFeature(featureKey)) {
+      return {
+        allowed: true,
+        reason: 'allowed',
+        featureKey,
+      };
+    }
+
+    const allowList = allowListOverride ?? this.createAllowList(userId);
 
     if (!allowList?.featureKeys.includes(featureKey)) {
       return {
@@ -152,5 +176,37 @@ export class AccessControlService {
     return routePath.endsWith('/') && routePath !== '/'
       ? routePath.slice(0, -1)
       : routePath;
+  }
+
+  private createAllowList(
+    userId: string | null,
+    featureKeysOverride?: string[]
+  ): UserAllowList | null {
+    if (!userId) {
+      return null;
+    }
+
+    const featureKeys = (
+      featureKeysOverride ?? Object.keys(this.featureToggles)
+    ).filter((featureKey) => {
+      const allowedUserIds = this.allowedUserIdsByFeature.get(featureKey);
+
+      return allowedUserIds?.has(userId) ?? false;
+    });
+
+    if (featureKeys.length === 0) {
+      return null;
+    }
+
+    return {
+      userId,
+      featureKeys,
+    };
+  }
+
+  private isRemoteUserTargetedFeature(featureKey: string): boolean {
+    return (
+      this.options.remoteUserTargetedFeatures?.includes(featureKey) ?? false
+    );
   }
 }
